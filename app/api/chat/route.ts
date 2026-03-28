@@ -7,7 +7,7 @@ const CIA_API_URL =
 
 // Timeout in milliseconds (server-side)
 // Set this in Amplify as CIA_API_TIMEOUT_MS (or another name you prefer)
-const CIA_API_TIMEOUT_MS = Number(process.env.CIA_API_TIMEOUT_MS || 25000)
+const CIA_API_TIMEOUT_MS = Number(process.env.CIA_API_TIMEOUT_MS || 250000)
 
 export async function POST(req: NextRequest) {
   const controller = new AbortController()
