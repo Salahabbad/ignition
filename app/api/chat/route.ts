@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Upstream API URL
 const CIA_API_URL =
   process.env.NEXT_PUBLIC_CIA_API_URL ||
-  'https://qhojuiets3.execute-api.us-east-1.amazonaws.com/stg-dt-il-ai-cloud-agent/chat'
+  'https://k2dup2xlcwxqhp7jzpzxww7zha0rdmdq.lambda-url.us-east-1.on.aws/'
 
 // Timeout in milliseconds (server-side)
 // Set this in Amplify as CIA_API_TIMEOUT_MS (or another name you prefer)
