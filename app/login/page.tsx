@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useStore } from '@/lib/store'
-import { Auth } from 'aws-amplify'
+import { signIn } from 'aws-amplify/auth'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -32,25 +32,31 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Use Cognito via Amplify Auth
-      const user = await Auth.signIn(formData.username, formData.password)
+      // Amplify v6 Auth: use signIn from aws-amplify/auth
+      const { isSignedIn, nextStep } = await signIn({
+        username: formData.username,
+        password: formData.password,
+      })
 
-      // You can extract anything you want from `user` here
-      const username = user.username
+      if (!isSignedIn) {
+        // You can handle MFA / NEW_PASSWORD_REQUIRED/etc via nextStep
+        console.warn('Additional auth step required:', nextStep)
+        setError('Additional authentication is required (MFA / new password).')
+        return
+      }
+
+      const username = formData.username
       const accountId = formData.accountId || 'default-account-id'
 
       // Keep your existing store API compatible
       login(accountId, username)
-
       router.push('/chat')
     } catch (err: any) {
       console.error('Amplify Auth signIn error:', err)
       let message = 'Authentication failed. Please check your credentials.'
-
       if (err?.message) {
         message = err.message
       }
-
       setError(message)
     } finally {
       setIsAuthenticating(false)
@@ -98,7 +104,10 @@ export default function LoginPage() {
                 placeholder="123456789012"
                 value={formData.accountId}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, accountId: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    accountId: e.target.value,
+                  }))
                 }
                 className="
                   bg-surface border-border
@@ -119,7 +128,10 @@ export default function LoginPage() {
                 placeholder="user@example.com"
                 value={formData.username}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, username: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }))
                 }
                 className="
                   bg-surface border-border
@@ -141,7 +153,10 @@ export default function LoginPage() {
                 placeholder="••••••••••••"
                 value={formData.password}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, password: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }))
                 }
                 className="
                   bg-surface border-border
