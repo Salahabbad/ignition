@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useStore } from '@/lib/store'
-import { Auth } from 'aws-amplify'
+import { Auth } from './amplifyClient'
 
 export default function LoginPage() {
   const router = useRouter()
